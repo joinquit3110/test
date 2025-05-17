@@ -1,0 +1,68 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title= title || 'Kha-Boom! - Interactive Learning'
+    meta(name='description' content=description || 'Kha-Boom! - Modern, interactive learning platform for mathematics and sciences')
+    link(rel='shortcut icon' href='/favicon.ico')
+    link(href='https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap' rel='stylesheet')
+    link(href='/khaboom/styles.css' rel='stylesheet')
+    block styles
+    
+  body(class=bodyClass)
+    header.kb-header
+      .container
+        .logo
+          a(href='/khaboom')
+            img(src='/frontend/logokb.png' alt='Kha-Boom!' width='140')
+        nav.main-nav
+          ul
+            li
+              a(href='/khaboom') Home
+            li
+              a(href='/khaboom/dashboard') Dashboard
+            li
+              a(href='/khaboom/about') About
+            li
+              a.cta-button(href='/khaboom/start') Get Started
+    
+    main
+      block content
+    
+    footer.kb-footer
+      .container
+        .footer-grid
+          .footer-col
+            h3 Kha-Boom!
+            p Exciting, interactive learning for everyone
+          .footer-col
+            h3 Links
+            ul
+              li
+                a(href='/khaboom') Home
+              li
+                a(href='/khaboom/dashboard') Dashboard
+              li
+                a(href='/khaboom/about') About
+          .footer-col
+            h3 Connect
+            ul.social-links
+              li
+                a(href='#') Twitter
+              li
+                a(href='#') Facebook
+              li
+                a(href='#') Instagram
+          .footer-col
+            h3 Legal
+            ul
+              li
+                a(href='#') Terms
+              li
+                a(href='#') Privacy
+        .copyright
+          p &copy; 2025 Kha-Boom! Learning. All rights reserved.
+    
+    block scripts
+      script(src='/khaboom/main.js')

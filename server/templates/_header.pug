@@ -1,0 +1,93 @@
+include _mixins
+
+//- Custom Kha-Boom! Header
+header
+  .course-header
+    a.course-logo(href='/khaboom')
+      img(src="/frontend/logokb.png" alt="Kha-Boom Logo" width="24" height="24")
+      span Kha-Boom!
+    
+    .course-nav
+      a(href='/khaboom') Home
+      a(href='/khaboom/dashboard') Courses
+      a(href='/khaboom/about') About
+  
+  //- Add custom header styles
+  style.
+    .course-header {
+      background: linear-gradient(135deg, #6B46C1 0%, #CD0E66 100%);
+      color: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+    }
+    
+    .course-logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .course-logo span {
+      background: linear-gradient(90deg, #FFC700, #FF4500, #FF00FF, #4D4DFF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+    
+    .course-nav {
+      display: flex;
+      gap: 1.5rem;
+    }
+    
+    .course-nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 0;
+      position: relative;
+      font-weight: 500;
+    }
+    
+    .course-nav a:hover {
+      text-decoration: underline;
+    }
+  
+  //- Accessibility Button (keep this from original)
+  button#skip-nav= __("Skip Navigation")
+
+  //- Keep only a simple search button consistent with our Kha-Boom! style
+  .khaboom-search-button(style="display:none;")
+    button(title=__('Search'))
+      | Search
+
+  //- Simplified user menu for Kha-Boom!
+  .khaboom-user-menu(style="display:none")
+    if user
+      a.khaboom-user-link(href="/dashboard") Dashboard
+    else
+      a.khaboom-user-link(href="/login") Sign in
+
+//- Simplified search and language features for Kha-Boom!
+.khaboom-search-modal(style="display:none")
+  form(action="/search" method="GET")
+    input(type="text" name="q" placeholder="Search Kha-Boom!" autocomplete="off")
+    button(type="submit") Search
+
+//- Simplified language selector (hidden by default)  
+.khaboom-language-selector(style="display:none")
+  select(name="language")
+    option(value="en" selected) English
+    option(value="es") Español
+    option(value="fr") Français
+
+//- Simplified login link for Kha-Boom!
+.khaboom-login-link(style="display:none")
+  a(href="/login") Sign in to Kha-Boom!

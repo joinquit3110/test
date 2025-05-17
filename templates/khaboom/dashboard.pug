@@ -1,0 +1,178 @@
+extends layout
+
+block append styles
+  style.
+    .dashboard-header {
+      background: linear-gradient(135deg, #4A5568 0%, #2D3748 100%);
+      color: white;
+      padding: 4rem 0 2rem;
+      text-align: center;
+    }
+    
+    .dashboard-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .dashboard-header p {
+      max-width: 600px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+    
+    .course-grid {
+      padding: 4rem 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .course-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .course-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .course-image {
+      height: 160px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    
+    .course-image::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.4));
+    }
+    
+    .course-color-tag {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      z-index: 1;
+    }
+    
+    .course-content {
+      padding: 1.5rem;
+    }
+    
+    .course-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .course-card p {
+      color: #4A5568;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    
+    .course-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1.5rem 1.5rem;
+    }
+    
+    .course-level {
+      font-size: 0.85rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      background: #EDF2F7;
+      color: #4A5568;
+    }
+    
+    .course-link {
+      text-decoration: none;
+      color: #6B46C1;
+      font-weight: 500;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s ease;
+    }
+    
+    .course-link:hover {
+      color: #553C9A;
+    }
+    
+    .course-link svg {
+      margin-left: 0.5rem;
+    }
+    
+    .categories {
+      background: #F7FAFC;
+      padding: 1rem 0;
+      border-bottom: 1px solid #E2E8F0;
+    }
+    
+    .category-tabs {
+      display: flex;
+      overflow-x: auto;
+      gap: 1rem;
+      padding-bottom: 0.5rem;
+    }
+    
+    .category-tab {
+      padding: 0.5rem 1.25rem;
+      border-radius: 20px;
+      background: white;
+      border: 1px solid #E2E8F0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    
+    .category-tab.active, .category-tab:hover {
+      background: #6B46C1;
+      color: white;
+      border-color: #6B46C1;
+    }
+
+block content
+  section.dashboard-header
+    .container
+      h1 Explore Our Interactive Courses
+      p Discover a world of engaging, interactive learning experiences tailored to help you master complex concepts with ease.
+  
+  section.categories
+    .container
+      .category-tabs
+        .category-tab.active All Courses
+        .category-tab Mathematics
+        .category-tab Computer Science
+        .category-tab Physics
+        .category-tab Data Science
+  
+  section
+    .container
+      .course-grid
+        each course in courses
+          .course-card
+            .course-image(style=`background-image: url(/content/${course.id}/hero.jpg)`)
+              .course-color-tag(style=`background-color: ${course.color || '#6B46C1'}`)
+            .course-content
+              h3= course.title
+              p= course.description || 'Explore the fascinating world of ' + course.title + ' through interactive lessons and engaging exercises.'
+            .course-footer
+              .course-level= course.level || 'All Levels'
+              a.course-link(href=`/course/${course.id}`) 
+                | Start Learning
+                svg(width="16", height="16", viewBox="0 0 24 24", fill="currentColor")
+                  path(d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z")

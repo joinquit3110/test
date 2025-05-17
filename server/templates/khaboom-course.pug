@@ -1,0 +1,381 @@
+extends _layout
+
+block vars
+  - var title = (section.title !== 'Introduction' ? section.title + ' – ' : '') + course.title
+  - var description = course.description
+  - var styles = ['/course.css', `/content/${course.id}/styles.css`]
+  - var scripts = [`/content/${course.id}/functions.js`, '/course.js', '/khaboom/khaboom-course-header.js']
+  - var thumbnail = `/content/${course.id}/thumbnails/${section.id}-${course.locale}.jpg`
+  - var theme = (section.background && section.background.includes('dark')) ? 'dark' : undefined;
+
+block append head
+  link(rel="stylesheet" href="/khaboom/custom-components.css")
+  style.
+    /* Kha-Boom course page enhancements */
+    body { padding-top: 0; }
+    header.app { display: none !important; }
+    
+    /* Main content container */
+    .course-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    /* Animation keyframes */
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes colorChange {
+      0% { filter: hue-rotate(0deg); }
+      50% { filter: hue-rotate(30deg); }
+      100% { filter: hue-rotate(0deg); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Header styles exactly like landing page */
+    .kb-custom-header {
+      background: linear-gradient(135deg, #6B46C1 0%, #CD0E66 100%);
+      color: white;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+    }
+    
+    .kb-header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .kb-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      gap: 0.75rem;
+      transition: all 0.3s ease;
+    }
+    
+    .kb-logo:hover {
+      transform: scale(1.05);
+    }
+    
+    .kb-logo:active {
+      transform: scale(0.95);
+    }
+    
+    .kb-logo img {
+      height: 36px;
+      width: auto;
+    }
+    
+    .kb-colorful-text {
+      background: linear-gradient(90deg, #FFC700, #FF4500, #FF00FF, #4D4DFF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      animation: colorChange 8s infinite;
+    }
+    
+    .kb-nav {
+      display: flex;
+      gap: 2rem;
+    }
+    
+    .kb-nav-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .kb-nav-link:hover {
+      transform: translateY(-2px);
+    }
+    
+    .kb-nav-link:active {
+      transform: translateY(1px);
+    }
+    
+    .kb-nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background: white;
+      transition: width 0.3s ease;
+    }
+    
+    .kb-nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .kb-mobile-menu {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    
+    /* Remove the reveal-banner and buttons */
+    .reveal-banner, button.complete, x-icon[name="share"], x-icon[name="reset"],
+    .footer-link[data-modal="share"], .footer-link[data-modal="reset"],
+    button[data-modal="share"], button[data-modal="reset"] {
+      display: none !important;
+    }
+    
+    /* Enhanced sidebar with gradient */
+    x-course-sidebar {
+      background: linear-gradient(180deg, #6B46C1 0%, #CD0E66 60%, #FF6B6B 100%) !important;
+    }
+    
+    .sidebar-hero {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .sidebar-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.3);
+      z-index: 1;
+    }
+    
+    .sidebar-title {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .back-to-dashboard {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      margin: 0.5rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .back-to-dashboard:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .back-to-dashboard:active {
+      transform: translateY(1px);
+    }
+    
+    .back-to-dashboard svg {
+      margin-right: 0.5rem;
+    }
+    
+    /* Enhanced h1 with animation and hover effects */
+    article h1 {
+      position: relative;
+      animation: fadeIn 0.8s ease-out;
+      transition: all 0.3s ease;
+      color: #6B46C1;
+    }
+    
+    article h1:hover {
+      transform: scale(1.02);
+    }
+    
+    article h1 .course-title {
+      background: linear-gradient(90deg, #6B46C1, #CD0E66);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      display: block;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    article h1 .course-title:hover {
+      animation: pulse 2s infinite;
+    }
+    
+    /* Footer styles */
+    .kb-enhanced-footer {
+      margin-top: auto;
+    }
+    
+    /* Media query for mobile responsiveness */
+    @media (max-width: 768px) {
+      .kb-nav {
+        display: none;
+      }
+      
+      .kb-mobile-menu {
+        display: block;
+      }
+    }
+
+block body
+  //- Custom Kha-Boom! header exactly like landing page
+  header.kb-custom-header
+    .kb-header-container
+      a.kb-logo(href='/khaboom')
+        img(src="/frontend/logokb.png" alt="Kha-Boom!")
+        span.kb-logo-text.kb-colorful-text(data-text="Kha-Boom!") Kha-Boom!
+      
+      button#kbMobileMenuBtn.kb-mobile-menu
+        svg(width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2")
+          line(x1="3" y1="12" x2="21" y2="12")
+          line(x1="3" y1="6" x2="21" y2="6")
+          line(x1="3" y1="18" x2="21" y2="18")
+      
+      nav.kb-nav
+        a.kb-nav-link(href='/khaboom') Home
+        a.kb-nav-link(href='/khaboom/dashboard') Dashboard
+        a.kb-nav-link(href='/khaboom/about') About
+
+  //- Main content container
+  .course-container
+    //- Course content
+    - var audioFile = (config.courses.audio && locale.id === 'en') ? cacheBust(`/content/${course.id}/audio/narration_en.mp3`) : undefined;
+    x-course(id=course.id data-section=section.id data-goals=section.goals data-audio=audioFile data-reveal=(config.courses.revealAll ? 'true' : undefined))
+      //- Enhanced sidebar with gradient and back button
+      x-course-sidebar
+        a.back-to-dashboard(href='/khaboom/dashboard')
+          svg(width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2")
+            path(d="M19 12H5M12 19l-7-7 7-7")
+          | Back to Dashboard
+          
+        .sidebar-hero(style=`background-image: url(/content/${course.id}/hero.jpg)`)
+          .sidebar-hero-gradient
+          .sidebar-title
+            if course.icon
+              .course-icon(style=`background-color: ${course.color}; background-image: url(${course.icon});`)
+            | #{course.title}
+            if course.author
+              .sidebar-author by #{course.author}
+
+        .sidebar-body
+          for s in course.sections
+            - var isCurrent = section.id === s.id;
+            if isCurrent
+              .sidebar-row.active
+                span.progress
+                  x-progress(r=10 p=(progressData ? progressData.getSectionProgress(s) : 0))
+                | #{s.title}
+            else
+              a.sidebar-row(href=s.url)
+                span.progress
+                  x-progress(r=10 p=(progressData ? progressData.getSectionProgress(s) : 0))
+                | #{s.title}
+
+      //- Course article content using original Mathigon structure
+      article(class=section.background lang=course.locale)
+        if section.background
+          .page-background
+
+        h1
+          span.course-title= course.title
+          | #{section.title}
+
+        //- Removed reveal banner
+
+        if section.locked && !config.courses.showLocked && !('preview' in req.query)
+          .section-dev
+            include ./svgs/tools.svg
+            h2= __('Under Construction')
+            p!= __('Sorry, we are still working on this section.<br>Please check back soon!')
+        else
+          if section.autoTranslated
+            .theorem= __('This page has been automatically translated and may contain errors. Please get in touch if you want to help us review translations!')
+          .steps
+            for stepId in section.steps
+              | !{course.steps[stepId].html}
+
+        footer
+          p.skip-step
+            | #{__('To reveal more content, you have to complete all the activities and exercises above.')}&nbsp;
+            br
+            strong #{__('Are you stuck?')} #[a.skip(tabindex=0) #{__('Skip to the next step')}] #{__('or')} #[a.show-all(tabindex=0) #{__('reveal all steps')}]
+            svg(width=72 height=10): path(d="M1 1L36 9L71 1" fill="none" stroke="#aaa" stroke-width=2)
+
+          block course-next-up
+            style!= `.next-arrow{background:${(nextUp.course || course).color}}.next-section:hover .next-arrow,.next-section:focus .next-arrow{background:${lighten((nextUp.course || course).color)}}`
+            a.next-section(href=nextUp.section.url title=(nextUp.course ? nextUp.course.title : nextUp.section.title)): .next-arrow
+              if nextUp.course
+                .next-icon(style=`background-image: url(${nextUp.course.icon || nextUp.course.hero});`)
+              .small= __('Next up:')
+              .title= nextUp.course ? nextUp.course.title : nextUp.section.title
+
+    //- Kha-Boom! enhanced footer
+    .kb-enhanced-footer
+      .kb-footer-container
+        .kb-footer-grid
+          .kb-footer-col
+            img.kb-footer-logo(src="/frontend/logokb.png" alt="Kha-Boom Logo")
+            p Empowering students with interactive mathematics education that makes learning exciting and engaging.
+            .kb-social-links
+              a.kb-social-icon(href="#") F
+              a.kb-social-icon(href="#") T
+              a.kb-social-icon(href="#") I
+          
+          .kb-footer-col
+            h3 Quick Links
+            ul.kb-footer-links
+              li
+                a(href="/khaboom") Home
+              li
+                a(href="/khaboom/dashboard") Courses
+              li
+                a(href="/khaboom/about") About Us
+              li
+                a(href="/khaboom/contact") Contact
+
+          .kb-footer-col
+            h3 Learn More
+            ul.kb-footer-links
+              li
+                a(href="#") Our Method
+              li
+                a(href="#") FAQ
+              li
+                a(href="#") Resources
+              li
+                a(href="#") Blog
+
+        .kb-footer-divider
+        
+        .kb-copyright
+          p © #{new Date().getFullYear()} Kha-Boom! Mathematics. All rights reserved.
+
+  //- Include original glossary, bios, and hints
+  script(type="application/json")#glossary!= course.glossJSON
+  script(type="application/json")#bios!= course.biosJSON
+  script(type="application/json")#hints!= course.hintsJSON
+  script(type="application/json")#userdata!= progressData ? progressData.getJSON(section.id) : '{}'
